@@ -27,16 +27,41 @@ class Palabra{
 class Tablero{
 
     palabra;
-    constructor(palabra){
+    estadoTablero = [];
 
+    constructor(palabra){
+        this.palabra = palabra;
+        this.estadoTablero = this.inicializarTablero();
+    }
+
+    inicializarTablero(){
+
+        //Convierto la palabra en un array de letras
+        const arrLetras = this.palabra.split("");
+
+        //Creo un nuevo array de guiones para tener los lugares donde las letras estaran
+        //Tendra el mismo largo que la palabra a adivinar
+        arrLetras = arrLetras.map(()=>"_");
+
+        return arrLetras;
+    }
+
+    //Actualizara cada letra adivinada y la colocara en el lugar correspondiente
+    actualizarTablero(letra){
+        //Recorro la palabra para ver si la letra sugerida coincide con alguna de la palabra
+        for(let i = 0; i < this.palabra.length; i++){
+            if(letra == this.palabra[i]){
+                //Si coincide entonces debo cambiar el guion por la letra en ese indice
+                this.estadoTablero[i] = letra;
+            }
+        }
     }
 
     obtenerEstadoTablero(){
 
     }
-    actualizarTablero(){
 
-    }
+
 }
 /**
  * Clase juego
@@ -46,11 +71,13 @@ class Tablero{
 class Juego{
 
     palabra;
-    intento
+    tablero;
+    intentos;
 
-    constructor(palabra){
-        palabra = new Palabra(palabra)
-        tablero = new Tablero(palabra);
+    constructor(palabra, intentos){
+        this.palabra = new Palabra(palabra)
+        this.tablero = new Tablero(palabra);
+        this.intentos = intentos;
     }
 
     iniciarJuego(){
@@ -58,7 +85,16 @@ class Juego{
     }
 
     adivinarLetra(){
-        //si no la adivina, restar un intento
+
+        //Si adivina la letra
+        if(this.palabra.verificarLetra(letra)){
+            this.tablero.actualizarTablero(letra);
+        }
+        else
+        {
+            //si no la adivina, restar un intento
+        }
+        
     }
 
     //Si el juego se termina porque se han adivinado las letras
