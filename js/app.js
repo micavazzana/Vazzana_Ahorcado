@@ -57,7 +57,7 @@ class Tablero{
         }
     }
 
-    //Retorna en un string el estado del tablero, de forma que se pueda saber si la palabra ya fue adivinada
+    //Retorna en un string el estado del tablero con los guiones o letras para poder visualizarlo
     obtenerEstadoTablero(){
         return this.estadoTablero.join("").toUpperCase();
     }
@@ -81,8 +81,10 @@ class Juego{
         this.intentos = intentos;
     }
 
-    adivinarLetra(letra){
 
+    //Se ocupa de controlar si la letra existe en la palabra y colocarla en el tablero
+    //Retornara true si la letra es correcta, de lo contrario resta un intento y retorna false
+    adivinarLetra(letra){
         //Si adivina la letra actualizo el tablero
         if(this.palabra.verificarLetra(letra)){
             this.tablero.actualizarTablero(letra);
@@ -97,10 +99,10 @@ class Juego{
         
     }
 
-    //Si el juego se termina porque se han adivinado las letras
-    //o si en cambio se han acabado la cantidad de intentos
+    //Controla el estado del juego
+    //Se termina porque se han adivinado las letras
+    //o si se han acabado la cantidad de intentos, sino su estado por defecto es "Continue"
     estadoJuego(){
-
         //Si se acabaron los intentos
         if(this.intentos == 0)
         {
@@ -117,16 +119,15 @@ class Juego{
         else
         {
             return "Continue";
-        }
-      
+        }      
     }
 }
 
 /*************** COMIENZO DEL JUEGO *****************/
 
-//De momento la lista de palabras estarán harcodeadas.
+//De momento la lista de palabras estarán harcodeadas. Existen 15 palabras
 //Próximamente se me ocurre incorporar una lista con JSON
-const arrayPalabras = ["Naranja","Manzana","Coco","Perro","Gato"];
+const arrayPalabras = ["Naranja","Manzana","Coco","Perro","Gato","Computadora","Libro","Chocolate","Piano","Guitarra","Pintura","Elefante","Raton","Estrella","Luna"];
 
 //Consigo un indice aleatorio del array para construir un nuevo juego con esa palabra
 let indiceAleatorio = Math.floor(Math.random() * arrayPalabras.length);
@@ -137,6 +138,8 @@ const juego = new Juego(arrayPalabras[indiceAleatorio].toUpperCase(),10);
 let letra;
 let estadoJuego = "Continue";
 let esLetraCorrecta;
+
+const arrLetrasErradas = [];
 
 //Mientras el juego no se haya ganado o perdido estara en "Continue"
 while(estadoJuego == "Continue"){
@@ -150,9 +153,15 @@ while(estadoJuego == "Continue"){
     estadoJuego = juego.estadoJuego();
 
     if(!esLetraCorrecta){
-        console.log("Letra ingresada: " + letra);
+        //Si no fue correcta muestro la cantidad de intentos que le restan
         console.log("Te quedan: " + juego.intentos + " intentos");
-    }
+        
+        //Guardo en un nuevo array las letras erradas y las muestro
+        arrLetrasErradas.push(letra);
+        arrLetrasErradas.forEach(element => {
+            console.log("Letra errada:" + element)
+        });
+    }    
 } 
 
 if(estadoJuego == "Win")
