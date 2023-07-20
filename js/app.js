@@ -57,8 +57,9 @@ class Tablero{
         }
     }
 
+    //Retorna en un string el estado del tablero, de forma que se pueda saber si la palabra ya fue adivinada
     obtenerEstadoTablero(){
-
+        return this.estadoTablero.join("");
     }
 
 
@@ -80,19 +81,16 @@ class Juego{
         this.intentos = intentos;
     }
 
-    iniciarJuego(){
+    adivinarLetra(letra){
 
-    }
-
-    adivinarLetra(){
-
-        //Si adivina la letra
+        //Si adivina la letra actualizo el tablero
         if(this.palabra.verificarLetra(letra)){
             this.tablero.actualizarTablero(letra);
         }
         else
         {
-            //si no la adivina, restar un intento
+            //si no la adivina, resta un intento
+            this.intentos--;
         }
         
     }
@@ -101,6 +99,24 @@ class Juego{
     //o si en cambio se han acabado la cantidad de intentos
     estadoJuego(){
 
+        //Si se acabaron los intentos
+        if(this.intentos == 0)
+        {
+            //Se perdio
+            return "Fail";
+        }
+        //Si el tablero se completo y es igual a la palabra
+        else if(this.palabra == this.tablero.obtenerEstadoTablero())
+        {
+            //Se gano
+            return "Win";
+        } 
+        //Si no se adivino la palabra pero todavia hay intentos
+        else
+        {
+            return "Continue";
+        }
+      
     }
 }
 
@@ -115,5 +131,28 @@ const arrayPalabras = ["Naranja","Manzana","Coco","Perro","Gato"];
 //Consigo un indice aleatorio del array para construir un nuevo juego con esa palabra
 let indiceAleatorio = Math.random()* arrayPalabras.length;
 
-//Instancio el juego con la palabra elegida
+//Instancio el juego con la palabra elegida y la cantidad de intentos
 const juego = new Juego(arrayPalabras[indiceAleatorio].toUpperCase());
+
+//Muestro el tablero inicial
+console.log(juego.tablero.obtenerEstadoTablero());
+
+let letra;
+let estadoJuego;
+do{
+
+    letra = prompt("Ingrese letra").toUpperCase();
+    juego.adivinarLetra(letra);
+    estadoJuego = juego.estadoJuego();
+    if(estadoJuego == "Win")
+    {
+        console.log("Ganaste");
+    }
+    else if(estadoJuego == "Fail"){
+        console.log("Perdiste");
+    }
+    else {
+        console.log("Te quedan: " + juego.intentos + "intentos");
+    }
+
+} while(estadoJuego == "Continue")
